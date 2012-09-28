@@ -1,16 +1,18 @@
+OPENGL = -L/usr/X11R6/lib -L/usr/local/lib -lglut -lGLU -lGL -lm -lGLEW
+OPT = -O2
 
-CC = g++ 
+OBJS = proj2.o
+CPPS = proj2.cpp
 
-LIBOPT = -L/usr/X11R6/lib -L/usr/local/lib -lglut -lGLU -lGL -lm
+all: proj2
 
-all : proj2
+proj2: objects
+	g++ $(OBJS) -o proj2 $(OPT) $(OPENGL)
 
-proj2 : proj2.o
-	$(CC) -o proj2 proj2.o $(LIBOPT) -lGLEW
+objects: $(CPPS)
+	g++ -c $(CPPS) $(OPT)
 
-%.o: %.c *.h Makefile
-	$(CC) $(OPT) -c -o $@ $< 
-
-clean : 
-	rm *.o proj2
+clean: 
+	rm *.o
+	rm proj2
 
