@@ -7,4 +7,4 @@
 
 using namespace std;
 
-void readInputFile(char* filename, int numTriangles, int numVertices, vector<int>& triangleTable, vector<double>& vertexTable);
+void readInputFile(string& filename, int numTriangles, int numVertices, vector<int>& triangleTable, vector<double>& vertexTable);

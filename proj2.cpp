@@ -1,7 +1,6 @@
 // Riley Moses
 
 #include <cmath>
-#include <iostream>
 #include <cstdlib>
 #include <cassert>
 
@@ -28,7 +27,7 @@ vector<int> triangleTable;
 vector<double> vertexTable;
 
 // GLUT window id; value asigned in main() and should stay constant
-GLint wid;
+GLint windowID;
 // Viewport dimensions; change when window is resized (via resize callback)
 GLint vpw = VPD_DEFAULT;
 GLint vph = VPD_DEFAULT;
@@ -205,7 +204,7 @@ void draw()
 	glRotatef(angle2,-2,-1,0);
 
 	// Ensure we're drawing to the correct GLUT window
-	glutSetWindow(wid);
+	glutSetWindow(windowID);
 
 	// Clear the color buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -230,11 +229,11 @@ void draw()
 // Handle mouse events
 void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
 {
-	switch(btn)
+	switch (btn)
 	{
 		case GLUT_LEFT_BUTTON:
 			cout << "Left Button"; // remove this line from your final submission
-			switch(state)
+			switch (state)
 			{
 				case GLUT_DOWN: 
 					cout << " down" << endl; // remove this line from your final submission
@@ -246,7 +245,7 @@ void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
 			break;
 		case GLUT_MIDDLE_BUTTON:
 			cout << "Middle Button"; // remove this line from your final submission
-			switch( state )
+			switch (state)
 			{
 				case GLUT_DOWN: 
 					cout << " down" << endl; // remove this line from your final submission
@@ -258,7 +257,7 @@ void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
 			break;
 		case GLUT_RIGHT_BUTTON:
 			cout << "Right Button"; // remove this line from your final submission
-			switch( state )
+			switch (state)
 			{
 				case GLUT_DOWN: 
 					cout << " down" << endl; // remove this line from your final submission
@@ -288,7 +287,7 @@ GLvoid passive_motion(GLint mx, GLint my)
 // Handle keyboard events
 void keyboard(GLubyte key, GLint x, GLint y)
 {
-	switch(key)
+	switch (key)
 	{
 		// Exit when escape is pressed
 		case 27:
@@ -301,7 +300,7 @@ void keyboard(GLubyte key, GLint x, GLint y)
 // Menu callback
 void menu(int value)
 {
-	switch(value)
+	switch (value)
 	{
 		case MENU_SLOWER:
 			dangle1 *= .5;
@@ -320,7 +319,7 @@ void menu(int value)
 // Handle resizing the window
 GLvoid reshape(GLint sizex, GLint sizey)
 {
-	glutSetWindow(wid);
+	glutSetWindow(windowID);
 
 	vpw = sizex;
 	vph = sizey;
@@ -407,7 +406,7 @@ GLint main(GLint argc, char *argv[])
 {
 	// Check for input file argument
 	string filename = "";
-	if(argc != 2)
+	if (argc != 2)
 	{
 		cout << "Usage: ./proj2 <input file name>" << endl;
 		exit(1);
@@ -418,10 +417,10 @@ GLint main(GLint argc, char *argv[])
 	}
 
 	// Read from input file
-	readInputFile((char*)filename.c_str(), numTriangles, numVertices, triangleTable, vertexTable);
+	readInputFile(filename, numTriangles, numVertices, triangleTable, vertexTable);
 
 	// Initialize GLUT: register callbacks, etc.
-	wid = init_glut(&argc, argv);
+	windowID = init_glut(&argc, argv);
 
 	// Take care of any OpenGL state initialization
 	init_opengl();
