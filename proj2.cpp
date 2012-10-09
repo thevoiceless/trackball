@@ -395,9 +395,6 @@ void init_opengl()
 	glEnable(GL_DEPTH_TEST);
 }
 
-
-
-
 GLint main(GLint argc, char **argv)
 {
 	// Initialize GLUT: register callbacks, etc.
