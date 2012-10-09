@@ -1,8 +1,8 @@
 OPENGL = -L/usr/X11R6/lib -L/usr/local/lib -lglut -lGLU -lGL -lm -lGLEW
 OPT = -O2
 
-OBJS = proj2.o
-CPPS = proj2.cpp
+OBJS = IOstuff.o proj2.o
+CPPS = IOstuff.cpp proj2.cpp
 
 all: proj2
 

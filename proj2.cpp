@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <cassert>
 
+#include "IOstuff.h"
+
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/glu.h>
@@ -13,11 +15,17 @@
 using namespace std;
 
 // Global variables
+// OpenGL
 static const int VPD_DEFAULT = 800;
 static const int MENU_SLOWER = 1;
 static const int MENU_FASTER = 2;
 static const int MENU_STOP_RUN = 3;
 static const double TWOPI = (2.0 * M_PI);
+// Model
+int numTriangles = 0;
+int numVertices = 0;
+vector<int> triangleTable;
+vector<double> vertexTable;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint wid;
@@ -395,8 +403,23 @@ void init_opengl()
 	glEnable(GL_DEPTH_TEST);
 }
 
-GLint main(GLint argc, char **argv)
+GLint main(GLint argc, char *argv[])
 {
+	// Check for input file argument
+	string filename = "";
+	if(argc != 2)
+	{
+		cout << "Usage: ./proj2 <input file name>" << endl;
+		exit(1);
+	}
+	else
+	{
+		filename = argv[1];
+	}
+
+	// Read from input file
+	readInputFile((char*)filename.c_str(), numTriangles, numVertices, triangleTable, vertexTable);
+
 	// Initialize GLUT: register callbacks, etc.
 	wid = init_glut(&argc, argv);
 
