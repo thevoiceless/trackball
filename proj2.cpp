@@ -23,8 +23,10 @@ static const double TWOPI = (2.0 * M_PI);
 // Model
 int numTriangles = 0;
 int numVertices = 0;
-vector<int> triangleTable;
-vector<double> vertexTable;
+// vector<int> triangleTable;
+// vector<double> vertexTable;
+vector<triangle> triangleTable;
+vector<vertex> vertexTable;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -134,44 +136,54 @@ GLuint draw_cube()
 	glEnd();
 }
 
+GLuint draw_model()
+{
+	glBegin(GL_TRIANGLES);
+	glEnd();
+}
+
 // All cubes
 GLuint draw_scene()
 {
-	set_material_properties(1.0,1.0,1.0);
+	set_material_properties(1.0, 1.0, 1.0);
 
-	draw_cube();
+	draw_model();
 
-	set_material_properties(1.0,0.0,0.0);
+	// set_material_properties(1.0,1.0,1.0);
 
-	glPushMatrix();
-		glTranslatef(-1.0,-1.0,-1.0);
-		glScalef(.4,.4,.4);
-		draw_cube();
-	glPopMatrix();
+	// draw_cube();
 
-	set_material_properties(0.0,1.0,0.0);
+	// set_material_properties(1.0,0.0,0.0);
+
+	// glPushMatrix();
+	// 	glTranslatef(-1.0,-1.0,-1.0);
+	// 	glScalef(.4,.4,.4);
+	// 	draw_cube();
+	// glPopMatrix();
+
+	// set_material_properties(0.0,1.0,0.0);
 	
-	glPushMatrix();
-		glTranslatef(-1.0,-1.0,1.0);
-		glScalef(.4,.4,.4);
-		draw_cube();
-	glPopMatrix();
+	// glPushMatrix();
+	// 	glTranslatef(-1.0,-1.0,1.0);
+	// 	glScalef(.4,.4,.4);
+	// 	draw_cube();
+	// glPopMatrix();
 
-	set_material_properties(0.0,0.0,1.0);
+	// set_material_properties(0.0,0.0,1.0);
 	
-	glPushMatrix();
-		glTranslatef(-1.0,1.0,-1.0);
-		glScalef(.4,.4,.4);
-		draw_cube();
-	glPopMatrix();
+	// glPushMatrix();
+	// 	glTranslatef(-1.0,1.0,-1.0);
+	// 	glScalef(.4,.4,.4);
+	// 	draw_cube();
+	// glPopMatrix();
 	
-	set_material_properties(0.5,0.0,0.5);
+	// set_material_properties(0.5,0.0,0.5);
 
-	glPushMatrix();
-		glTranslatef(1.0,-1.0,-1.0);
-		glScalef(.4,.4,.4);
-		draw_cube();
-	glPopMatrix();
+	// glPushMatrix();
+	// 	glTranslatef(1.0,-1.0,-1.0);
+	// 	glScalef(.4,.4,.4);
+	// 	draw_cube();
+	// glPopMatrix();
 }
 
 // Draw callback: clear window, set up matrices, draw all cubes
@@ -209,7 +221,7 @@ void draw()
 	// Clear the color buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Draw cubes; note that flat shading is the default (use glShadeModel to change)
+	// Draw cubes; smooth shading is the default (use glShadeModel to change)
 	draw_scene();
 
 	// Flush the pipeline

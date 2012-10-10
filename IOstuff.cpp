@@ -1,6 +1,6 @@
 #include "IOstuff.h"
 
-void readInputFile(string& filename, int numTriangles, int numVertices, vector<int>& triangleTable, vector<double>& vertexTable)
+void readInputFile(string& filename, int numTriangles, int numVertices, vector<triangle>& triangleTable, vector<vertex>& vertexTable)
 {
 	// Open the input file
 	ifstream inFile(filename.c_str());
@@ -21,9 +21,7 @@ void readInputFile(string& filename, int numTriangles, int numVertices, vector<i
 	{
 		int v1, v2, v3;
 		inFile >> v1 >> v2 >> v3;
-		triangleTable.push_back(v1);
-		triangleTable.push_back(v2);
-		triangleTable.push_back(v3);
+		triangleTable.push_back(triangle(v1, v2, v3));
 	}
 
 	// Read vertex coordinates for all vertices
@@ -31,12 +29,10 @@ void readInputFile(string& filename, int numTriangles, int numVertices, vector<i
 	{
 		double x, y, z;
 		inFile >> x >> y >> z;
-		vertexTable.push_back(x);
-		vertexTable.push_back(y);
-		vertexTable.push_back(z);
+		vertexTable.push_back(vertex(x, y, z));
 	}
 
-	cout << "Number of vertex IDs: " << triangleTable.size() << endl;
+	cout << "Number of triangles: " << triangleTable.size() << endl;
 	cout << "Number of vertices: " << vertexTable.size() << endl;
 	inFile.close();
 }

@@ -1,0 +1,10 @@
+GLint test;
+glGetIntegerv(GL_SHADE_MODEL, &test);
+if (test == GL_SMOOTH)
+{
+	cout << "smooth" << endl;
+}
+else
+{
+	cout << "flat" << endl;
+}
