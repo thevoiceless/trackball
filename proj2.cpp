@@ -5,6 +5,8 @@
 #include <cassert>
 
 #include "IOstuff.h"
+#include "Vector.h"
+#include "functions.h"
 
 #include <GL/gl.h>
 #include <GL/glext.h>
