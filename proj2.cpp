@@ -15,20 +15,22 @@
 
 using namespace std;
 
-// Global variables
-// OpenGL
+// OpenGL variables
 static const int VPD_DEFAULT = 800;
 static const int MENU_SLOWER = 1;
 static const int MENU_FASTER = 2;
 static const int MENU_STOP_RUN = 3;
 static const double TWOPI = (2.0 * M_PI);
-// Model
+// Counters
 int numTriangles = 0;
 int numVertices = 0;
+// STL vectors to hold the triangles, vertices, triangle normals, and vertex normals
 vector<triangle> triangleTable;
 vector<vertex> vertexTable;
 vector<Vector> triangleNormals;
 vector<Vector> vertexNormals;
+// Bounding box
+double xmin, xmax, ymin, ymax, zmin, zmax;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -89,7 +91,7 @@ void set_material_properties(GLfloat r, GLfloat g, GLfloat b)
 
 // Rendering
 // A single cube extending from -1 to 1 in all dimensions
-GLuint draw_cube()
+GLuint draw_cubes()
 {
 	glBegin(GL_QUADS);
 
@@ -192,14 +194,14 @@ GLuint draw_scene()
 
 	// set_material_properties(1.0,1.0,1.0);
 
-	// draw_cube();
+	// draw_cubes();
 
 	// set_material_properties(1.0,0.0,0.0);
 
 	// glPushMatrix();
 	// 	glTranslatef(-1.0,-1.0,-1.0);
 	// 	glScalef(.4,.4,.4);
-	// 	draw_cube();
+	// 	draw_cubes();
 	// glPopMatrix();
 
 	// set_material_properties(0.0,1.0,0.0);
@@ -207,7 +209,7 @@ GLuint draw_scene()
 	// glPushMatrix();
 	// 	glTranslatef(-1.0,-1.0,1.0);
 	// 	glScalef(.4,.4,.4);
-	// 	draw_cube();
+	// 	draw_cubes();
 	// glPopMatrix();
 
 	// set_material_properties(0.0,0.0,1.0);
@@ -215,7 +217,7 @@ GLuint draw_scene()
 	// glPushMatrix();
 	// 	glTranslatef(-1.0,1.0,-1.0);
 	// 	glScalef(.4,.4,.4);
-	// 	draw_cube();
+	// 	draw_cubes();
 	// glPopMatrix();
 	
 	// set_material_properties(0.5,0.0,0.5);
@@ -223,7 +225,7 @@ GLuint draw_scene()
 	// glPushMatrix();
 	// 	glTranslatef(1.0,-1.0,-1.0);
 	// 	glScalef(.4,.4,.4);
-	// 	draw_cube();
+	// 	draw_cubes();
 	// glPopMatrix();
 }
 
@@ -474,6 +476,7 @@ GLint main(GLint argc, char *argv[])
 	// Calculate normals
 	calcNormals(triangleTable, vertexTable, triangleNormals, vertexNormals);
 	// Calculate bounding box
+	calcBoundingBox(vertexTable, xmin, xmax, ymin, ymax, zmin, zmax);
 
 
 	// Initialize GLUT: register callbacks, etc.
