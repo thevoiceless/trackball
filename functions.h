@@ -9,7 +9,7 @@
 // 	Set Normal.z to (multiply U.x by V.y) minus (multiply U.y by V.x)
 // 	Return Normal
 // End Function
-Vector calcNormal(triangle& t, vector<vertex>& vertexTable)
+Vector calcSurfaceNormal(triangle& t, vector<vertex>& vertexTable)
 {
 	Vector U((vertexTable.at(t.v2).x - vertexTable.at(t.v1).x),
 		(vertexTable.at(t.v2).y - vertexTable.at(t.v1).y),
@@ -22,4 +22,12 @@ Vector calcNormal(triangle& t, vector<vertex>& vertexTable)
 	return Vector(((U.y * V.z) - (U.z * V.y)),
 		((U.z * V.x) - (U.x * V.z)),
 		((U.x * V.y) - (U.y * V.x)));
+}
+
+void calcNormals(vector<triangle>& triangleTable, vector<vertex>& vertexTable, vector<Vector>& triangleNormals, vector<Vector>& vertexNormals)
+{
+	for (int i = 0; i < triangleTable.size(); ++i)
+	{
+		triangleNormals.push_back(calcSurfaceNormal(triangleTable.at(i), vertexTable));
+	}
 }

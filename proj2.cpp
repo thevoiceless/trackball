@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "IOstuff.h"
 #include "Vector.h"
+#include "IOstuff.h"
 #include "functions.h"
 
 #include <GL/gl.h>
@@ -25,10 +25,10 @@ static const double TWOPI = (2.0 * M_PI);
 // Model
 int numTriangles = 0;
 int numVertices = 0;
-// vector<int> triangleTable;
-// vector<double> vertexTable;
 vector<triangle> triangleTable;
 vector<vertex> vertexTable;
+vector<Vector> triangleNormals;
+vector<Vector> vertexNormals;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -138,19 +138,31 @@ GLuint draw_cube()
 	glEnd();
 }
 
-GLuint draw_model()
+// Flat shading: One normal for the surface
+GLuint draw_model_flat()
 {
 	glBegin(GL_TRIANGLES);
+	// for (int i = 0; i < triangleTable.size(); ++i)
+	// {
+	// 	glNormal3f();
+	// 	glVertex3f();
+	// 	glVertex3f();
+	// 	glVertex3f();
+	// }
+	glEnd();
+}
+
+// Smooth shading: One normal per surface vertex
+GLuint draw_model_smooth()
+{
+	glBegin(GL_TRIANGLES);
+
 	glEnd();
 }
 
 // All cubes
 GLuint draw_scene()
 {
-	set_material_properties(1.0, 1.0, 1.0);
-
-	draw_model();
-
 	// set_material_properties(1.0,1.0,1.0);
 
 	// draw_cube();
@@ -432,6 +444,8 @@ GLint main(GLint argc, char *argv[])
 
 	// Read from input file
 	readInputFile(filename, numTriangles, numVertices, triangleTable, vertexTable);
+	// Calculate normals
+	calcNormals(triangleTable, vertexTable, triangleNormals, vertexNormals);
 
 	// Initialize GLUT: register callbacks, etc.
 	windowID = init_glut(&argc, argv);
