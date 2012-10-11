@@ -141,28 +141,55 @@ GLuint draw_cube()
 // Flat shading: One normal for the surface
 GLuint draw_model_flat()
 {
+	glShadeModel(GL_FLAT);
 	glBegin(GL_TRIANGLES);
-	// for (int i = 0; i < triangleTable.size(); ++i)
-	// {
-	// 	glNormal3f();
-	// 	glVertex3f();
-	// 	glVertex3f();
-	// 	glVertex3f();
-	// }
+	for (int i = 0; i < triangleTable.size(); ++i)
+	{
+		glNormal3f(triangleNormals.at(i).x, triangleNormals.at(i).y, triangleNormals.at(i).z);
+		triangle t(triangleTable.at(i).v1, triangleTable.at(i).v2, triangleTable.at(i).v3);
+		glVertex3f(vertexTable.at(t.v1).x, vertexTable.at(t.v1).y, vertexTable.at(t.v1).z);
+		glVertex3f(vertexTable.at(t.v3).x, vertexTable.at(t.v3).y, vertexTable.at(t.v3).z);
+		glVertex3f(vertexTable.at(t.v2).x, vertexTable.at(t.v2).y, vertexTable.at(t.v2).z);
+	}
 	glEnd();
 }
 
-// Smooth shading: One normal per surface vertex
+// Smooth shading: One normal per vertex
 GLuint draw_model_smooth()
 {
+	glShadeModel(GL_SMOOTH);
 	glBegin(GL_TRIANGLES);
+	for (int i = 0; i < triangleTable.size(); ++i)
+	{
+		triangle t(triangleTable.at(i).v1, triangleTable.at(i).v2, triangleTable.at(i).v3);
 
+		glNormal3f(vertexNormals.at(t.v1).x, vertexNormals.at(t.v1).y, vertexNormals.at(t.v1).z);
+		glVertex3f(vertexTable.at(t.v1).x, vertexTable.at(t.v1).y, vertexTable.at(t.v1).z);
+
+		glNormal3f(vertexNormals.at(t.v3).x, vertexNormals.at(t.v3).y, vertexNormals.at(t.v3).z);
+		glVertex3f(vertexTable.at(t.v3).x, vertexTable.at(t.v3).y, vertexTable.at(t.v3).z);
+
+		glNormal3f(vertexNormals.at(t.v2).x, vertexNormals.at(t.v2).y, vertexNormals.at(t.v2).z);
+		glVertex3f(vertexTable.at(t.v2).x, vertexTable.at(t.v2).y, vertexTable.at(t.v2).z);
+	}
 	glEnd();
 }
 
 // All cubes
 GLuint draw_scene()
 {
+	set_material_properties(1.0,1.0,1.0);
+
+	// Translate by minus center of bounding box
+	// Scale
+	// Rotation matrix (trackball)
+	// Translation forward
+	// REVERSE ORDER
+
+	draw_model_smooth();
+
+
+
 	// set_material_properties(1.0,1.0,1.0);
 
 	// draw_cube();
@@ -446,6 +473,8 @@ GLint main(GLint argc, char *argv[])
 	readInputFile(filename, numTriangles, numVertices, triangleTable, vertexTable);
 	// Calculate normals
 	calcNormals(triangleTable, vertexTable, triangleNormals, vertexNormals);
+	// Calculate bounding box
+
 
 	// Initialize GLUT: register callbacks, etc.
 	windowID = init_glut(&argc, argv);

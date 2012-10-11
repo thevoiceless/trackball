@@ -19,15 +19,39 @@ Vector calcSurfaceNormal(triangle& t, vector<vertex>& vertexTable)
 		(vertexTable.at(t.v3).y - vertexTable.at(t.v1).y),
 		(vertexTable.at(t.v3).z - vertexTable.at(t.v1).z));
 
-	return Vector(((U.y * V.z) - (U.z * V.y)),
-		((U.z * V.x) - (U.x * V.z)),
-		((U.x * V.y) - (U.y * V.x)));
+	return Vector(-((U.y * V.z) - (U.z * V.y)),
+		-((U.z * V.x) - (U.x * V.z)),
+		-((U.x * V.y) - (U.y * V.x)));
 }
 
 void calcNormals(vector<triangle>& triangleTable, vector<vertex>& vertexTable, vector<Vector>& triangleNormals, vector<Vector>& vertexNormals)
 {
+	// Calculate normal for each triangle
 	for (int i = 0; i < triangleTable.size(); ++i)
 	{
 		triangleNormals.push_back(calcSurfaceNormal(triangleTable.at(i), vertexTable));
 	}
+
+	// Calculate normal for each vertex
+	// Normal of a vertex v = Sum of cross products computed for all incident triangles
+	// Linear-time algorithm:
+	// 		Allocate a vector N[] of V normals (V = number of vertices), initialize all entries to zero
+	// 		For each triangle ∆(a, b, c) do
+	// 		Below, a,b and c are considered integer IDs of vertices or their coordinates depending on context
+	// 			Compute normal of ∆, N∆ = ab × ac
+	// 			N[a]+ = N∆
+	// 			N[b]+ = N∆
+	// 			N[c]+ = N∆
+	// Since triangles are oriented consistently, all cross products will point in a consistent direction
+	// Want to use outward normals
+	vector<Vector> normals (vertexTable.size(), Vector(0,0,0));
+	for (int i = 0; i < triangleTable.size(); ++i)
+	{
+		normals.at(triangleTable.at(i).v1) = normals.at(triangleTable.at(i).v1).plus(triangleNormals.at(i));
+		normals.at(triangleTable.at(i).v2) = normals.at(triangleTable.at(i).v2).plus(triangleNormals.at(i));
+		normals.at(triangleTable.at(i).v3) = normals.at(triangleTable.at(i).v3).plus(triangleNormals.at(i));
+	}
+	vertexNormals = normals;
+	cout << "Number of triangle normals: " << triangleNormals.size() << endl;
+	cout << "Number of vertex normals: " << vertexNormals.size() << endl;
 }
