@@ -56,14 +56,11 @@ void calcNormals(vector<triangle>& triangleTable, vector<vertex>& vertexTable, v
 	cout << "Number of vertex normals: " << vertexNormals.size() << endl;
 }
 
-void calcBoundingBox(vector<vertex>& vertexTable, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
+void calcBoundingBox(vector<vertex>& vertexTable, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax, double maxdim)
 {
 	xmin = xmax = vertexTable.at(0).x;
-	//xmax = vertexTable.at(0).x;
 	ymin = ymax = vertexTable.at(0).y;
-	//ymax = vertexTable.at(0).y;
 	zmin = zmax = vertexTable.at(0).z;
-	//zmax = vertexTable.at(0).z;
 
 	for (int i = 1; i < vertexTable.size(); ++i)
 	{
@@ -77,10 +74,14 @@ void calcBoundingBox(vector<vertex>& vertexTable, double xmin, double xmax, doub
 		if (vertexTable.at(i).z > zmax) zmax = vertexTable.at(i).z;
 	}
 
+	double tempmax = max(abs(xmax - xmin), abs(ymax - ymin));
+	maxdim = max(tempmax, abs(zmax - zmin));
+
 	cout << "Min x: " << xmin << endl;
 	cout << "Max x: " << xmax << endl;
 	cout << "Min y: " << ymin << endl;
 	cout << "Max y: " << ymax << endl;
 	cout << "Min z: " << zmin << endl;
 	cout << "Max z: " << zmax << endl;
+	cout << "Max dim: " << maxdim << endl;
 }

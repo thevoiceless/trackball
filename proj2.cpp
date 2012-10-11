@@ -30,7 +30,7 @@ vector<vertex> vertexTable;
 vector<Vector> triangleNormals;
 vector<Vector> vertexNormals;
 // Bounding box
-double xmin, xmax, ymin, ymax, zmin, zmax;
+double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -187,6 +187,12 @@ GLuint draw_scene()
 	// Rotation matrix (trackball)
 	// Translation forward
 	// REVERSE ORDER
+	////glPushMatrix();
+
+
+	// Trackball rotation
+	////glTranslatef(-((xmin + mxax) / 2), -((ymin + ymax) / 2), -((zmin + zmax) / 2));
+	////glPopMatrix();
 
 	draw_model_smooth();
 
@@ -476,7 +482,7 @@ GLint main(GLint argc, char *argv[])
 	// Calculate normals
 	calcNormals(triangleTable, vertexTable, triangleNormals, vertexNormals);
 	// Calculate bounding box
-	calcBoundingBox(vertexTable, xmin, xmax, ymin, ymax, zmin, zmax);
+	calcBoundingBox(vertexTable, xmin, xmax, ymin, ymax, zmin, zmax, maxdim);
 
 
 	// Initialize GLUT: register callbacks, etc.
