@@ -37,7 +37,8 @@ vector<Vector> vertexNormals;
 // Bounding box
 double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
-double fov = 8.0;
+double origFov = 10.0;
+double fov = 10.0;
 // Whether or not smooth shading is being used
 bool smoothShading = true;
 // Whether or not back-face culling is being used
@@ -237,7 +238,7 @@ GLuint draw_scene()
 	// Translation forward
 	// REVERSE ORDER
 	glPushMatrix();
-		// glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(10.0 / 2.0))));	// Why doesn't this work?
+		glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(origFov/ 2.0))));
 		glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
 		// Trackball rotation here
 		glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
@@ -297,8 +298,7 @@ void draw()
 	// Set the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov,1.0,15.0,25.0);		// Why DOES this work?
-	// gluPerspective(fov, 1.0, (1.0 / tan(toRadians(10.0 / 2.0))) - 1.0, (1.0 / tan(toRadians(10.0 / 2.0))) + 3.0);		// Why doesn't this work?
+	gluPerspective(fov, 1.0, (1.0 / tan(toRadians(origFov / 2.0))) - 1.0, (1.0 / tan(toRadians(origFov / 2.0))) + 3.0);
 
 	// Set the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -317,9 +317,9 @@ void draw()
 	}
 
 	// Build modelview matrix
-	glTranslatef(0,0,-20);			// Why do I use this instead of my translation in draw_scene?
-	// glRotatef(angle1,1,2,3);
-	// glRotatef(angle2,-2,-1,0);
+	// glTranslatef(0,0,-20);
+	glRotatef(angle1,1,2,3);
+	glRotatef(angle2,-2,-1,0);
 
 	// Ensure we're drawing to the correct GLUT window
 	glutSetWindow(windowID);
