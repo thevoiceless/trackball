@@ -31,6 +31,10 @@ vector<Vector> triangleNormals;
 vector<Vector> vertexNormals;
 // Bounding box
 double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
+// Field of view angle
+double fov = 10.0;
+// Whether or not smooth shading is being used
+bool smoothShading = true;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -44,7 +48,7 @@ GLfloat angle2 = 0;
 GLfloat dangle1 = 0.0057;
 GLfloat dangle2 = 0.0071;
 // Whether or not to animate
-bool animate = true;
+bool animate = false;
 
 // Set light source properties
 void init_lightsource()
@@ -86,7 +90,6 @@ void set_material_properties(GLfloat r, GLfloat g, GLfloat b)
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambient_and_diffuse);
- 
 }
 
 // Rendering
@@ -187,14 +190,20 @@ GLuint draw_scene()
 	// Rotation matrix (trackball)
 	// Translation forward
 	// REVERSE ORDER
-	////glPushMatrix();
-
-
-	// Trackball rotation
-	////glTranslatef(-((xmin + mxax) / 2), -((ymin + ymax) / 2), -((zmin + zmax) / 2));
-	////glPopMatrix();
-
-	draw_model_smooth();
+	glPushMatrix();
+		// glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(fov / 2.0))));
+		// glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
+		// Trackball rotation here
+		// glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
+		if (smoothShading)
+		{
+			draw_model_smooth();
+		}
+		else
+		{
+			draw_model_flat();
+		}
+	glPopMatrix();
 
 
 
@@ -242,6 +251,12 @@ void draw()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(8.0,1.0,15.0,25.0);
+	// cout << "perspective args:" << endl;
+	// cout << fov << endl;
+	// cout << 1.0 << endl;
+	// cout << (1.0 / tan(toRadians(fov / 2.0))) - 1.0 << endl;
+	// cout << (1.0 / tan(toRadians(fov / 2.0))) + 3.0 << endl;
+	// gluPerspective(fov, 1.0, (1.0 / tan(toRadians(fov / 2.0))) - 1.0, (1.0 / tan(toRadians(fov / 2.0))) + 3.0);
 
 	// Set the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -270,7 +285,7 @@ void draw()
 	// Clear the color buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Draw cubes; smooth shading is the default (use glShadeModel to change)
+	// Draw; smooth shading is the default (use glShadeModel to change)
 	draw_scene();
 
 	// Flush the pipeline
@@ -348,11 +363,15 @@ GLvoid passive_motion(GLint mx, GLint my)
 // Handle keyboard events
 void keyboard(GLubyte key, GLint x, GLint y)
 {
+	cout << "key: " << key << endl;
 	switch (key)
 	{
 		// Exit when escape is pressed
 		case 27:
 			exit(0);
+		case 't':
+			smoothShading = !smoothShading;
+			glutPostRedisplay();
 		default:
 			break;
 	}
@@ -483,6 +502,9 @@ GLint main(GLint argc, char *argv[])
 	calcNormals(triangleTable, vertexTable, triangleNormals, vertexNormals);
 	// Calculate bounding box
 	calcBoundingBox(vertexTable, xmin, xmax, ymin, ymax, zmin, zmax, maxdim);
+
+	cout << "Near: " << (1.0 / tan(toRadians(fov / 2.0))) - 1.0 << endl;
+	cout << "Far: " << (1.0 / tan(toRadians(fov / 2.0))) + 3.0 << endl;
 
 
 	// Initialize GLUT: register callbacks, etc.

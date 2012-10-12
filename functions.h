@@ -85,3 +85,8 @@ void calcBoundingBox(vector<vertex>& vertexTable, double xmin, double xmax, doub
 	cout << "Max z: " << zmax << endl;
 	cout << "Max dim: " << maxdim << endl;
 }
+
+double toRadians(double d)
+{
+	return (d * (M_PI / 180.0));
+}
