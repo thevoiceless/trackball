@@ -236,11 +236,12 @@ GLuint draw_scene()
 	// Rotation matrix (trackball)
 	// Translation forward
 	// REVERSE ORDER
+	// cout << -1.0 - (1.0 / tan(toRadians(fov / 2.0))) << endl;
 	glPushMatrix();
-		// glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(fov / 2.0))));
-		// glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
+		glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(fov / 2.0))));
+		glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
 		// Trackball rotation here
-		// glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
+		glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
 		if (smoothShading)
 		{
 			draw_model_smooth();
@@ -297,13 +298,13 @@ void draw()
 	// Set the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov,1.0,15.0,25.0);
+	// gluPerspective(fov,1.0,15.0,25.0);
 	// cout << "perspective args:" << endl;
 	// cout << fov << endl;
 	// cout << 1.0 << endl;
 	// cout << (1.0 / tan(toRadians(fov / 2.0))) - 1.0 << endl;
 	// cout << (1.0 / tan(toRadians(fov / 2.0))) + 3.0 << endl;
-	// gluPerspective(fov, 1.0, (1.0 / tan(toRadians(fov / 2.0))) - 1.0, (1.0 / tan(toRadians(fov / 2.0))) + 3.0);
+	gluPerspective(10.0, 1.0, (1.0 / tan(toRadians(fov / 2.0))) - 1.0, (1.0 / tan(toRadians(fov / 2.0))) + 3.0);
 
 	// Set the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -322,9 +323,9 @@ void draw()
 	}
 
 	// Build modelview matrix
-	glTranslatef(0,0,-20);
-	glRotatef(angle1,1,2,3);
-	glRotatef(angle2,-2,-1,0);
+	// glTranslatef(0,0,-20);
+	// glRotatef(angle1,1,2,3);
+	// glRotatef(angle2,-2,-1,0);
 
 	// Ensure we're drawing to the correct GLUT window
 	glutSetWindow(windowID);
