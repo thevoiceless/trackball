@@ -4,14 +4,14 @@
 #include <cstdlib>
 #include <cassert>
 
-#include "Vector.h"
-#include "IOstuff.h"
-#include "functions.h"
-
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+
+#include "Vector.h"
+#include "IOstuff.h"
+#include "functions.h"
 
 using namespace std;
 
@@ -56,6 +56,27 @@ GLfloat dangle1 = 0.0057;
 GLfloat dangle2 = 0.0071;
 // Whether or not to animate
 bool animate = false;
+
+void toggleCulling()
+{
+	if (backFaceCulling)
+	{
+		glCullFace(GL_FRONT);
+		backFaceCulling = false;
+	}
+	else
+	{
+		glCullFace(GL_BACK);
+		backFaceCulling = true;
+	}
+	glutPostRedisplay();
+}
+
+void toggleShading()
+{
+	smoothShading = !smoothShading;
+	glutPostRedisplay();
+}
 
 // Set light source properties
 void init_lightsource()
@@ -377,9 +398,11 @@ void keyboard(GLubyte key, GLint x, GLint y)
 		// Exit when escape is pressed
 		case 27:
 			exit(0);
-		case 't':
-			smoothShading = !smoothShading;
-			glutPostRedisplay();
+		case 's':
+			toggleShading();
+			break;
+		case 'c':
+			toggleCulling();
 			break;
 		default:
 			break;
@@ -392,8 +415,7 @@ void menu(int value)
 	switch (value)
 	{
 		case MENU_TOGGLE_SHADER:
-			smoothShading = !smoothShading;
-			glutPostRedisplay();
+			toggleShading();
 			break;
 		case MENU_ZOOM_IN:
 			cout << "// Zoom in" << endl;
@@ -402,17 +424,7 @@ void menu(int value)
 			cout << "// Zoom out" << endl;
 			break;
 		case MENU_TOGGLE_CULLING:
-			if (backFaceCulling)
-			{
-				glCullFace(GL_FRONT);
-				backFaceCulling = false;
-			}
-			else
-			{
-				glCullFace(GL_BACK);
-				backFaceCulling = true;
-			}
-			glutPostRedisplay();
+			toggleCulling();
 			break;
 		case MENU_SLOWER:
 			dangle1 *= .5;
