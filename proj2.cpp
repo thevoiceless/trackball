@@ -37,7 +37,7 @@ vector<Vector> vertexNormals;
 // Bounding box
 double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
-double fov = 10.0;
+double fov = 8.0;
 // Whether or not smooth shading is being used
 bool smoothShading = true;
 // Whether or not back-face culling is being used
@@ -76,6 +76,24 @@ void toggleShading()
 {
 	smoothShading = !smoothShading;
 	glutPostRedisplay();
+}
+
+void zoomIn()
+{
+	if (fov > 1.0)
+	{
+		fov -= 1.0;
+		glutPostRedisplay();
+	}
+}
+
+void zoomOut()
+{
+	if (fov < 178.0)
+	{
+		fov += 1.0;
+		glutPostRedisplay();
+	}
 }
 
 // Set light source properties
@@ -279,7 +297,7 @@ void draw()
 	// Set the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(8.0,1.0,15.0,25.0);
+	gluPerspective(fov,1.0,15.0,25.0);
 	// cout << "perspective args:" << endl;
 	// cout << fov << endl;
 	// cout << 1.0 << endl;
@@ -409,6 +427,22 @@ void keyboard(GLubyte key, GLint x, GLint y)
 	}
 }
 
+// Handle special keys
+void specialKeys(int key, int x, int y)
+{
+	switch (key)
+	{
+		case GLUT_KEY_UP:
+			zoomIn();
+			break;
+		case GLUT_KEY_DOWN:
+			zoomOut();
+			break;
+		default:
+			break;
+	}
+}
+
 // Menu callback
 void menu(int value)
 {
@@ -419,9 +453,11 @@ void menu(int value)
 			break;
 		case MENU_ZOOM_IN:
 			cout << "// Zoom in" << endl;
+			zoomIn();
 			break;
 		case MENU_ZOOM_OUT:
 			cout << "// Zoom out" << endl;
+			zoomOut();
 			break;
 		case MENU_TOGGLE_CULLING:
 			toggleCulling();
@@ -489,8 +525,8 @@ GLint init_glut(GLint *argc, char **argv)
 	// Window obscured/revealed event handler
 	glutVisibilityFunc(NULL);
 
-	// Handling of keyboard SHIFT, ALT, CTRL keys
-	glutSpecialFunc(NULL);
+	// Handling of special keyboard keys (F-keys, arrowkeys, shift, alt, etc.)
+	glutSpecialFunc(specialKeys);
 
 	// What to do when mouse cursor enters/exits the current window
 	glutEntryFunc(NULL);
