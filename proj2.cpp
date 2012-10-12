@@ -17,10 +17,14 @@ using namespace std;
 
 // OpenGL variables
 static const int VPD_DEFAULT = 800;
-static const int MENU_TOGGLE_SHADER = 0;
-static const int MENU_SLOWER = 1;
-static const int MENU_FASTER = 2;
-static const int MENU_STOP_RUN = 3;
+static const int MENU_TOGGLE_SHADER = 1;
+static const int MENU_ZOOM_IN = 2;
+static const int MENU_ZOOM_OUT = 3;
+static const int MENU_TOGGLE_CULLING = 4;
+static const int MENU_RESET_VIEW = 5;
+static const int MENU_SLOWER = 6;
+static const int MENU_FASTER = 7;
+static const int MENU_STOP_RUN = 8;
 static const double TWOPI = (2.0 * M_PI);
 // Counters
 int numTriangles = 0;
@@ -36,6 +40,8 @@ double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 double fov = 10.0;
 // Whether or not smooth shading is being used
 bool smoothShading = true;
+// Whether or not back-face culling is being used
+bool backFaceCulling = true;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -207,42 +213,43 @@ GLuint draw_scene()
 	glPopMatrix();
 
 
+	/*
+	set_material_properties(1.0,1.0,1.0);
 
-	// set_material_properties(1.0,1.0,1.0);
+	draw_cubes();
 
-	// draw_cubes();
+	set_material_properties(1.0,0.0,0.0);
 
-	// set_material_properties(1.0,0.0,0.0);
+	glPushMatrix();
+		glTranslatef(-1.0,-1.0,-1.0);
+		glScalef(.4,.4,.4);
+		draw_cubes();
+	glPopMatrix();
 
-	// glPushMatrix();
-	// 	glTranslatef(-1.0,-1.0,-1.0);
-	// 	glScalef(.4,.4,.4);
-	// 	draw_cubes();
-	// glPopMatrix();
-
-	// set_material_properties(0.0,1.0,0.0);
+	set_material_properties(0.0,1.0,0.0);
 	
-	// glPushMatrix();
-	// 	glTranslatef(-1.0,-1.0,1.0);
-	// 	glScalef(.4,.4,.4);
-	// 	draw_cubes();
-	// glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-1.0,-1.0,1.0);
+		glScalef(.4,.4,.4);
+		draw_cubes();
+	glPopMatrix();
 
-	// set_material_properties(0.0,0.0,1.0);
+	set_material_properties(0.0,0.0,1.0);
 	
-	// glPushMatrix();
-	// 	glTranslatef(-1.0,1.0,-1.0);
-	// 	glScalef(.4,.4,.4);
-	// 	draw_cubes();
-	// glPopMatrix();
+	glPushMatrix();
+		glTranslatef(-1.0,1.0,-1.0);
+		glScalef(.4,.4,.4);
+		draw_cubes();
+	glPopMatrix();
 	
-	// set_material_properties(0.5,0.0,0.5);
+	set_material_properties(0.5,0.0,0.5);
 
-	// glPushMatrix();
-	// 	glTranslatef(1.0,-1.0,-1.0);
-	// 	glScalef(.4,.4,.4);
-	// 	draw_cubes();
-	// glPopMatrix();
+	glPushMatrix();
+		glTranslatef(1.0,-1.0,-1.0);
+		glScalef(.4,.4,.4);
+		draw_cubes();
+	glPopMatrix();
+	*/
 }
 
 // Draw callback: clear window, set up matrices, draw all cubes
@@ -388,6 +395,25 @@ void menu(int value)
 			smoothShading = !smoothShading;
 			glutPostRedisplay();
 			break;
+		case MENU_ZOOM_IN:
+			cout << "// Zoom in" << endl;
+			break;
+		case MENU_ZOOM_OUT:
+			cout << "// Zoom out" << endl;
+			break;
+		case MENU_TOGGLE_CULLING:
+			if (backFaceCulling)
+			{
+				glCullFace(GL_FRONT);
+				backFaceCulling = false;
+			}
+			else
+			{
+				glCullFace(GL_BACK);
+				backFaceCulling = true;
+			}
+			glutPostRedisplay();
+			break;
 		case MENU_SLOWER:
 			dangle1 *= .5;
 			dangle2 *= .5;
@@ -421,7 +447,7 @@ GLint init_glut(GLint *argc, char **argv)
 {
 	GLint id;
 
-	glutInit(argc,argv);
+	glutInit(argc, argv);
 
 	// Size and placement hints to the window system
 	glutInitWindowSize(vpw, vph);
@@ -431,7 +457,7 @@ GLint init_glut(GLint *argc, char **argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
 	// Create a GLUT window (not drawn until glutMainLoop() is entered)
-	id = glutCreateWindow("MACS441 OpenGL Sample code");    
+	id = glutCreateWindow("CSCI441 Project 2");    
 
 	// Register callbacks
 	// Window size changes
@@ -462,10 +488,15 @@ GLint init_glut(GLint *argc, char **argv)
 
 	// Create menu
 	GLint menuID = glutCreateMenu(menu);
-	glutAddMenuEntry("Toggle shading model", MENU_TOGGLE_SHADER);
+	glutAddMenuEntry("Toggle Shading Model", MENU_TOGGLE_SHADER);
+	glutAddMenuEntry("Zoom In", MENU_ZOOM_IN);
+	glutAddMenuEntry("Zoom Out", MENU_ZOOM_OUT);
+	glutAddMenuEntry("Toggle Culling Orientation", MENU_TOGGLE_CULLING);
+	glutAddMenuEntry("Reset View", MENU_RESET_VIEW);
 	glutAddMenuEntry("Slower", MENU_SLOWER);
 	glutAddMenuEntry("Faster", MENU_FASTER);
 	glutAddMenuEntry("Stop/run", MENU_STOP_RUN);
+
 	glutSetMenu(menuID);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
