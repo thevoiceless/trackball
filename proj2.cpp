@@ -17,6 +17,7 @@ using namespace std;
 
 // OpenGL variables
 static const int VPD_DEFAULT = 800;
+static const int MENU_TOGGLE_SHADER = 0;
 static const int MENU_SLOWER = 1;
 static const int MENU_FASTER = 2;
 static const int MENU_STOP_RUN = 3;
@@ -372,6 +373,7 @@ void keyboard(GLubyte key, GLint x, GLint y)
 		case 't':
 			smoothShading = !smoothShading;
 			glutPostRedisplay();
+			break;
 		default:
 			break;
 	}
@@ -382,6 +384,10 @@ void menu(int value)
 {
 	switch (value)
 	{
+		case MENU_TOGGLE_SHADER:
+			smoothShading = !smoothShading;
+			glutPostRedisplay();
+			break;
 		case MENU_SLOWER:
 			dangle1 *= .5;
 			dangle2 *= .5;
@@ -456,9 +462,10 @@ GLint init_glut(GLint *argc, char **argv)
 
 	// Create menu
 	GLint menuID = glutCreateMenu(menu);
-	glutAddMenuEntry("slower", MENU_SLOWER);
-	glutAddMenuEntry("faster", MENU_FASTER);
-	glutAddMenuEntry("stop/run", MENU_STOP_RUN);
+	glutAddMenuEntry("Toggle shading model", MENU_TOGGLE_SHADER);
+	glutAddMenuEntry("Slower", MENU_SLOWER);
+	glutAddMenuEntry("Faster", MENU_FASTER);
+	glutAddMenuEntry("Stop/run", MENU_STOP_RUN);
 	glutSetMenu(menuID);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
