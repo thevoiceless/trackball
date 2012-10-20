@@ -38,7 +38,7 @@ vector<Vector> vertexNormals;
 double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
 double origFov = 10.0;
-double fov = 10.0;
+double currentFov = 10.0;
 // Whether or not smooth shading is being used
 bool smoothShading = true;
 // Whether or not back-face culling is being used
@@ -81,18 +81,18 @@ void toggleShading()
 
 void zoomIn()
 {
-	if (fov / 1.025 > 0.1)
+	if (currentFov / 1.025 > 0.1)
 	{
-		fov /= 1.025;
+		currentFov /= 1.025;
 		glutPostRedisplay();
 	}
 }
 
 void zoomOut()
 {
-	if (fov * 1.025 < 179.0)
+	if (currentFov * 1.025 < 179.0)
 	{
-		fov *= 1.025;
+		currentFov *= 1.025;
 		glutPostRedisplay();
 	}
 }
@@ -238,7 +238,7 @@ GLuint draw_scene()
 	// Translation forward
 	// REVERSE ORDER
 	glPushMatrix();
-		glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(origFov/ 2.0))));
+		glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(origFov / 2.0))));
 		glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
 		// Trackball rotation here
 		glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
@@ -298,7 +298,7 @@ void draw()
 	// Set the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov, 1.0, (1.0 / tan(toRadians(origFov / 2.0))) - 1.0, (1.0 / tan(toRadians(origFov / 2.0))) + 3.0);
+	gluPerspective(currentFov, 1.0, (1.0 / tan(toRadians(origFov / 2.0))) - 1.0, (1.0 / tan(toRadians(origFov / 2.0))) + 3.0);
 
 	// Set the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
@@ -584,8 +584,8 @@ GLint main(GLint argc, char *argv[])
 	// Calculate bounding box
 	calcBoundingBox(vertexTable, xmin, xmax, ymin, ymax, zmin, zmax, maxdim);
 
-	cout << "Near: " << (1.0 / tan(toRadians(fov / 2.0))) - 1.0 << endl;
-	cout << "Far: " << (1.0 / tan(toRadians(fov / 2.0))) + 3.0 << endl;
+	cout << "Near: " << (1.0 / tan(toRadians(currentFov / 2.0))) - 1.0 << endl;
+	cout << "Far: " << (1.0 / tan(toRadians(currentFov / 2.0))) + 3.0 << endl;
 
 
 	// Initialize GLUT: register callbacks, etc.
