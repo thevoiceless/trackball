@@ -44,6 +44,8 @@ double d = (1.0 / tan(toRadians(origFov / 2.0)));;
 bool smoothShading = true;
 // Whether or not back-face culling is being used
 bool backFaceCulling = true;
+// Centered at the origin
+const Vector center(0, 0, 0);
 // Point under the pixel
 Vector p;
 Vector q;
@@ -293,6 +295,10 @@ GLuint draw_scene()
 		glTranslatef(0, 0, -1.0 - d);
 		glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
 		// Trackball rotation here
+		glMultMatrixd(R0);
+		glMultMatrixd(R);
+
+
 		glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
 		if (smoothShading)
 		{
@@ -409,12 +415,30 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 					// Begin dragging trackball, assign the event coordinates to i_0 and j_0
 					i_0 = mouseX;
 					j_0 = mouseY;
-					cout << " down at (" << mouseX << "," << mouseY << ")" << endl;
-					p = getPointUnderPixel(mouseX, mouseY);
+					cout << " down at (" << i_0 << "," << j_0 << ")" << endl;
+					// Point p is the point on the sphere underneath (i_0, j_0)
+					p = getPointUnderPixel(i_0, j_0);
 					cout << "P: (" << p.x << "," << p.y << "," << p.z << ")" << endl;
 					break;
 				case GLUT_UP:
-					cout << " up" << endl; // remove this line from your final submission
+					cout << " up at (" << mouseX << "," << mouseY << ")" << endl; // remove this line from your final submission
+					Vector rotAxis = p.crossWith(q);
+					double rotAngle = toDegrees(acos(p.dotWith(q)));
+
+					glMatrixMode(GL_MODELVIEW);
+					// Save the current matrix
+					glPushMatrix();
+						// Set modelview matrix to identity
+						glLoadIdentity();
+						// Apply Rprime
+						glRotated(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
+						// Apply R
+						glMultMatrixd(R);
+						// Modelview → R
+						glGetDoublev(GL_MODELVIEW_MATRIX, R);
+					// Restore the original modelview matrix
+					glPopMatrix();
+					setIdentity(R0);
 					break;
 			}
 			break;
@@ -449,8 +473,33 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 GLvoid button_motion(GLint mouseX, GLint mouseY)
 {
 	cout << "Motion with button down: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
-	q = getPointUnderPixel(mouseX, mouseY);
-	cout << "Q: (" << q.x << ", " << q.y << ", " << q.z << ")" << endl;
+
+	if (mouseX == i_0 && mouseY == j_0)
+	{
+		setIdentity(R0);
+	}
+	else
+	{
+		q = getPointUnderPixel(mouseX, mouseY);
+		cout << "Q: (" << q.x << ", " << q.y << ", " << q.z << ")" << endl;
+
+		Vector rotAxis = p.crossWith(q);
+		double rotAngle = toDegrees(acos(p.dotWith(q)));
+
+		glMatrixMode(GL_MODELVIEW);
+		// Save the current matrix
+		glPushMatrix();
+			// Set modelview matrix to identity
+			glLoadIdentity();
+			// Apply the rotation
+			glRotated(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
+			// Modelview → R0
+			glGetDoublev(GL_MODELVIEW_MATRIX, R0);
+		// Restore the original modelview matrix
+		glPopMatrix();
+	}
+
+	glutPostRedisplay();
 	return;
 }
 

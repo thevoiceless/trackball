@@ -10,4 +10,6 @@ public:
 
 	Vector plus(Vector& v2);
 	Vector minus(Vector& v2);
+	double dotWith(Vector& v2);
+	Vector crossWith(Vector& v2);
 };

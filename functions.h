@@ -91,6 +91,11 @@ double toRadians(double d)
 	return (d * (M_PI / 180.0));
 }
 
+double toDegrees(double r)
+{
+	return (r * (180.0 / M_PI));
+}
+
 void setIdentity(double matrix[])
 {
 	for (int i = 0; i <= 16; ++i)
