@@ -44,6 +44,9 @@ double d = (1.0 / tan(toRadians(origFov / 2.0)));
 bool smoothShading = true;
 // Whether or not back-face culling is being used
 bool backFaceCulling = true;
+// Point under the pixel
+int pixelX = 0;
+int pixelY = 0;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -377,7 +380,10 @@ void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
 			switch (state)
 			{
 				case GLUT_DOWN: 
-					cout << " down" << endl; // remove this line from your final submission
+					cout << " down at (" << mx << "," << my << ")" << endl;
+					pixelX = ((2 * mx) / (d - 1)) - 1;
+					pixelY = -(((2 * my) / (d - 1)) - 1);
+					cout << "Point under pixel: (" << pixelX << "," << pixelY << ")" << endl;
 					break;
 				case GLUT_UP:
 					cout << " up" << endl; // remove this line from your final submission
@@ -421,7 +427,7 @@ GLvoid button_motion(GLint mx, GLint my)
 // Mouse moves with button up
 GLvoid passive_motion(GLint mx, GLint my)
 {
-	cout << "Passive Motion: " << mx << "," << my << endl; // remove this line from your final submission
+	//cout << "Passive Motion: " << mx << "," << my << endl; // remove this line from your final submission
 	return;
 }
 
