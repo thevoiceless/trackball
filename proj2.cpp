@@ -98,6 +98,28 @@ void zoomOut()
 	}
 }
 
+void resetZoom()
+{
+	// Zoomed out
+	if (currentFov > origFov)
+	{
+		while (currentFov > origFov)
+		{
+			currentFov /= 1.025;
+			glutPostRedisplay();
+		}
+	}
+	// Zoomed in
+	else
+	{
+		while (currentFov < origFov)
+		{
+			currentFov *= 1.025;
+			glutPostRedisplay();
+		}
+	}
+}
+
 // Set light source properties
 void init_lightsource()
 {
@@ -458,6 +480,11 @@ void menu(int value)
 		case MENU_TOGGLE_CULLING:
 			toggleCulling();
 			break;
+		case MENU_RESET_VIEW:
+			//currentFov = origFov;
+			resetZoom();
+			glutPostRedisplay();
+			break;
 		case MENU_SLOWER:
 			dangle1 *= .5;
 			dangle2 *= .5;
@@ -536,7 +563,7 @@ GLint init_glut(GLint *argc, char **argv)
 	glutAddMenuEntry("Zoom In", MENU_ZOOM_IN);
 	glutAddMenuEntry("Zoom Out", MENU_ZOOM_OUT);
 	glutAddMenuEntry("Toggle Culling Orientation", MENU_TOGGLE_CULLING);
-	glutAddMenuEntry("Reset View", MENU_RESET_VIEW);
+	glutAddMenuEntry("Reset Zoom", MENU_RESET_VIEW);
 	glutAddMenuEntry("Slower", MENU_SLOWER);
 	glutAddMenuEntry("Faster", MENU_FASTER);
 	glutAddMenuEntry("Stop/run", MENU_STOP_RUN);
