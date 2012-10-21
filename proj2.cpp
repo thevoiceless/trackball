@@ -459,6 +459,7 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 GLvoid button_motion(GLint mouseX, GLint mouseY)
 {
 	cout << "Motion with button down: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
+	q = getPointUnderPixel(mouseX, mouseY);
 	return;
 }
 
