@@ -39,6 +39,7 @@ double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
 double origFov = 10.0;
 double currentFov = 10.0;
+double d = (1.0 / tan(toRadians(origFov / 2.0)));
 // Whether or not smooth shading is being used
 bool smoothShading = true;
 // Whether or not back-face culling is being used
@@ -238,7 +239,7 @@ GLuint draw_scene()
 	// Translation forward
 	// REVERSE ORDER
 	glPushMatrix();
-		glTranslatef(0, 0, -1.0 - (1.0 / tan(toRadians(origFov / 2.0))));
+		glTranslatef(0, 0, -1.0 - d);
 		glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
 		// Trackball rotation here
 		glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
@@ -298,7 +299,7 @@ void draw()
 	// Set the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(currentFov, 1.0, (1.0 / tan(toRadians(origFov / 2.0))) - 1.0, (1.0 / tan(toRadians(origFov / 2.0))) + 3.0);
+	gluPerspective(currentFov, 1.0, d - 1.0, d + 3.0);
 
 	// Set the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
