@@ -52,6 +52,13 @@ double pointX = 0;
 double pointY = 0;
 double pointZ = 0;
 
+double R[16];	// The superposition of all ﬁnished rotations (matrix)
+double R0[16];	// The rotation that is currently being speciﬁed
+// Coordinates of the last mouse button down event
+int i_0 = 0;
+int j_0 = 0;	
+
+
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
 // Viewport dimensions; change when window is resized (via resize callback)
