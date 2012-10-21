@@ -150,24 +150,7 @@ void slowDown()
 
 void resetZoom()
 {
-	// Zoomed out
-	if (currentFov > origFov)
-	{
-		while (currentFov > origFov)
-		{
-			currentFov /= 1.025;
-			glutPostRedisplay();
-		}
-	}
-	// Zoomed in
-	else
-	{
-		while (currentFov < origFov)
-		{
-			currentFov *= 1.025;
-			glutPostRedisplay();
-		}
-	}
+	currentFov = origFov;
 }
 
 void resetRotation()
@@ -292,6 +275,7 @@ void draw()
 	// Set the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	cout << "Current: " << currentFov << endl;
 	gluPerspective(currentFov, 1.0, d - 1.0, d + 3.0);
 
 	// Set the modelview matrix
