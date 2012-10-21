@@ -46,6 +46,8 @@ bool smoothShading = true;
 bool backFaceCulling = true;
 // Point under the pixel
 Vector mousePoint(0, 0, 0);
+Vector p(0, 0, 0);
+Vector q(0, 0, 0);
 double tempX = 0;
 double tempY = 0;
 double pointX = 0;
@@ -73,10 +75,10 @@ GLfloat dangle2 = 0.0071;
 // Whether or not to animate
 bool animate = false;
 
-Vector getPointUnderPixel(double mx, double my)
+Vector getPointUnderPixel(double mouseX, double mouseY)
 {
-	tempX = ((2.0 * mx) / (vpw - 1.0)) - 1.0;
-	tempY = -(((2.0 * my) / (vph - 1.0)) - 1.0);
+	tempX = ((2.0 * mouseX) / (vpw - 1.0)) - 1.0;
+	tempY = -(((2.0 * mouseY) / (vph - 1.0)) - 1.0);
 	double possibleZ = (1.0 - pow(tempX, 2) - pow(tempY, 2));
 	cout << "tempX: " << tempX << endl;
 	cout << "tempY: " << tempY << endl;
@@ -405,7 +407,7 @@ void draw()
 
 // Interaction
 // Handle mouse events
-void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
+void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 {
 	switch (btn)
 	{
@@ -413,9 +415,12 @@ void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
 			cout << "Left Button"; // remove this line from your final submission
 			switch (state)
 			{
-				case GLUT_DOWN: 
-					cout << " down at (" << mx << "," << my << ")" << endl;
-					getPointUnderPixel(mx, my);
+				case GLUT_DOWN:
+					// Begin dragging trackball, assign the event coordinates to i_0 and j_0
+					i_0 = mouseX;
+					j_0 = mouseY;
+					cout << " down at (" << mouseX << "," << mouseY << ")" << endl;
+					p = getPointUnderPixel(mouseX, mouseY);
 					cout << "Point under pixel: (" << pointX << "," << pointY << "," << pointZ << ")" << endl;
 					break;
 				case GLUT_UP:
@@ -451,16 +456,16 @@ void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
 }
 
 // Mouse moves with button down
-GLvoid button_motion(GLint mx, GLint my)
+GLvoid button_motion(GLint mouseX, GLint mouseY)
 {
-	cout << "Motion with button down: " << mx << "," << my << endl; // remove this line from your final submission
+	cout << "Motion with button down: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
 	return;
 }
 
 // Mouse moves with button up
-GLvoid passive_motion(GLint mx, GLint my)
+GLvoid passive_motion(GLint mouseX, GLint mouseY)
 {
-	//cout << "Passive Motion: " << mx << "," << my << endl; // remove this line from your final submission
+	//cout << "Passive Motion: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
 	return;
 }
 
