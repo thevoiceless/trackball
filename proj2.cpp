@@ -276,7 +276,6 @@ void draw()
 	// Set the projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	cout << "Current: " << currentFov << endl;
 	gluPerspective(currentFov, 1.0, d - 1.0, d + 3.0);
 
 	// Set the modelview matrix
