@@ -112,6 +112,12 @@ void toggleShading()
 	glutPostRedisplay();
 }
 
+void toggleAnimation()
+{
+	animate = !animate;
+	glutPostRedisplay();
+}
+
 void zoomIn()
 {
 	if (currentFov / 1.025 > 0.1)
@@ -128,6 +134,18 @@ void zoomOut()
 		currentFov *= 1.025;
 		glutPostRedisplay();
 	}
+}
+
+void speedUp()
+{
+	dangle1 *= 1.5;
+	dangle2 *= 1.5;
+}
+
+void slowDown()
+{
+	dangle1 *= .5;
+	dangle2 *= .5;
 }
 
 void resetZoom()
@@ -421,10 +439,24 @@ void keyboard(GLubyte key, GLint x, GLint y)
 		case 27:
 			exit(0);
 		case 's':
+		case 'S':
 			toggleShading();
 			break;
 		case 'c':
+		case 'C':
 			toggleCulling();
+			break;
+		case 'a':
+		case 'A':
+			toggleAnimation();
+			break;
+		case 'q':
+		case 'Q':
+			speedUp();
+			break;
+		case 'w':
+		case 'W':
+			slowDown();
 			break;
 		default:
 			break;
@@ -478,16 +510,13 @@ void menu(int value)
 			glutPostRedisplay();
 			break;
 		case MENU_SLOWER:
-			dangle1 *= .5;
-			dangle2 *= .5;
+			slowDown();
 			break;
 		case MENU_FASTER:
-			dangle1 *= 1.5;
-			dangle2 *= 1.5;
+			speedUp();
 			break;
 		case MENU_STOP_RUN:
-			animate = !animate;
-			glutPostRedisplay();
+			toggleAnimation();
 			break;
 	}
 }
@@ -557,15 +586,15 @@ GLint init_glut(GLint *argc, char **argv)
 	glutAddMenuEntry("All", MENU_RESET_VIEW);
 
 	GLint animMenu = glutCreateMenu(menu);
-	glutAddMenuEntry("Faster", MENU_FASTER);
-	glutAddMenuEntry("Slower", MENU_SLOWER);
-	glutAddMenuEntry("Start/Stop", MENU_STOP_RUN);
+	glutAddMenuEntry("Faster (Q)", MENU_FASTER);
+	glutAddMenuEntry("Slower (W)", MENU_SLOWER);
+	glutAddMenuEntry("Start/Stop (A)", MENU_STOP_RUN);
 
 	GLint mainMenu = glutCreateMenu(menu);
-	glutAddMenuEntry("Toggle Shading Model", MENU_TOGGLE_SHADER);
-	glutAddMenuEntry("Zoom In", MENU_ZOOM_IN);
-	glutAddMenuEntry("Zoom Out", MENU_ZOOM_OUT);
-	glutAddMenuEntry("Toggle Culling Orientation", MENU_TOGGLE_CULLING);
+	glutAddMenuEntry("Toggle Shading Model (S)", MENU_TOGGLE_SHADER);
+	glutAddMenuEntry("Zoom In (Up Arrow)", MENU_ZOOM_IN);
+	glutAddMenuEntry("Zoom Out (Down Arrow)", MENU_ZOOM_OUT);
+	glutAddMenuEntry("Toggle Culling Orientation (C)", MENU_TOGGLE_CULLING);
 	glutAddSubMenu("Animation", animMenu);
 	glutAddSubMenu("Reset", resetMenu);
 
@@ -598,8 +627,7 @@ GLint main(GLint argc, char *argv[])
 	string filename = "";
 	if (argc != 2)
 	{
-		cout << "Usage: ./proj2 <input file name>" << endl;
-		exit(1);
+		filename = "input.t";
 	}
 	else
 	{
