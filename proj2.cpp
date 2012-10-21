@@ -39,14 +39,17 @@ double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
 double origFov = 10.0;
 double currentFov = 10.0;
-double d = (1.0 / tan(toRadians(origFov / 2.0)));
+double d = (1.0 / tan(toRadians(origFov / 2.0)));;
 // Whether or not smooth shading is being used
 bool smoothShading = true;
 // Whether or not back-face culling is being used
 bool backFaceCulling = true;
 // Point under the pixel
-int pixelX = 0;
-int pixelY = 0;
+double tempX = 0;
+double tempY = 0;
+double pointX = 0;
+double pointY = 0;
+double pointZ = 0;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -61,6 +64,28 @@ GLfloat dangle1 = 0.0057;
 GLfloat dangle2 = 0.0071;
 // Whether or not to animate
 bool animate = false;
+
+void getPointUnderPixel(double mx, double my)
+{
+	tempX = ((2.0 * mx) / (vpw - 1.0)) - 1.0;
+	tempY = -(((2.0 * my) / (vph - 1.0)) - 1.0);
+	double possibleZ = (1.0 - pow(tempX, 2) - pow(tempY, 2));
+	cout << "tempX: " << tempX << endl;
+	cout << "tempY: " << tempY << endl;
+	cout << "possibleZ: " << possibleZ << endl;
+	if (possibleZ >= 0)
+	{
+		pointX = tempX;
+		pointY = tempY;
+		pointZ = sqrt(possibleZ);
+	}
+	else
+	{
+		pointX = (tempX / sqrt(pow(tempX, 2) + pow(tempY, 2)));
+		pointY = (tempY / sqrt(pow(tempX, 2) + pow(tempY, 2)));
+		pointZ = 0;
+	}
+}
 
 void toggleCulling()
 {
@@ -381,9 +406,8 @@ void mouse_button(GLint btn, GLint state, GLint mx, GLint my)
 			{
 				case GLUT_DOWN: 
 					cout << " down at (" << mx << "," << my << ")" << endl;
-					pixelX = ((2 * mx) / (d - 1)) - 1;
-					pixelY = -(((2 * my) / (d - 1)) - 1);
-					cout << "Point under pixel: (" << pixelX << "," << pixelY << ")" << endl;
+					getPointUnderPixel(mx, my);
+					cout << "Point under pixel: (" << pointX << "," << pointY << "," << pointZ << ")" << endl;
 					break;
 				case GLUT_UP:
 					cout << " up" << endl; // remove this line from your final submission
@@ -621,6 +645,7 @@ GLint main(GLint argc, char *argv[])
 	cout << "Near: " << (1.0 / tan(toRadians(currentFov / 2.0))) - 1.0 << endl;
 	cout << "Far: " << (1.0 / tan(toRadians(currentFov / 2.0))) + 3.0 << endl;
 
+	cout << "d: " << d << endl;
 
 	// Initialize GLUT: register callbacks, etc.
 	windowID = init_glut(&argc, argv);
