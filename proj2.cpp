@@ -22,9 +22,11 @@ static const int MENU_ZOOM_IN = 2;
 static const int MENU_ZOOM_OUT = 3;
 static const int MENU_TOGGLE_CULLING = 4;
 static const int MENU_RESET_VIEW = 5;
-static const int MENU_SLOWER = 6;
-static const int MENU_FASTER = 7;
-static const int MENU_STOP_RUN = 8;
+static const int MENU_RESET_ZOOM = 6;
+static const int MENU_RESET_ROTATION = 7;
+static const int MENU_SLOWER = 8;
+static const int MENU_FASTER = 9;
+static const int MENU_STOP_RUN = 10;
 static const double TWOPI = (2.0 * M_PI);
 // Counters
 int numTriangles = 0;
@@ -150,6 +152,14 @@ void resetZoom()
 	}
 }
 
+void resetRotation()
+{
+	setIdentity(R);
+	setIdentity(R0);
+	animate = false;
+	angle1 = angle2 = 0;
+}
+
 // Set light source properties
 void init_lightsource()
 {
@@ -243,6 +253,8 @@ GLuint draw_scene()
 		// Rotation matrix (trackball)
 		glMultMatrixd(R0);
 		glMultMatrixd(R);
+		glRotatef(angle1,1,2,3);
+		glRotatef(angle2,-2,-1,0);
 		// Translate by minus center of bounding box
 		glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
 		if (smoothShading)
@@ -279,11 +291,6 @@ void draw()
 		angle1 += dangle1;
 		angle2 += dangle2;
 	}
-
-	// Build modelview matrix
-	// glTranslatef(0,0,-20);
-	glRotatef(angle1,1,2,3);
-	glRotatef(angle2,-2,-1,0);
 
 	// Ensure we're drawing to the correct GLUT window
 	glutSetWindow(windowID);
@@ -457,8 +464,17 @@ void menu(int value)
 		case MENU_TOGGLE_CULLING:
 			toggleCulling();
 			break;
+		case MENU_RESET_ZOOM:
+			resetZoom();
+			glutPostRedisplay();
+			break;
+		case MENU_RESET_ROTATION:
+			resetRotation();
+			glutPostRedisplay();
+			break;
 		case MENU_RESET_VIEW:
 			resetZoom();
+			resetRotation();
 			glutPostRedisplay();
 			break;
 		case MENU_SLOWER:
@@ -471,6 +487,7 @@ void menu(int value)
 			break;
 		case MENU_STOP_RUN:
 			animate = !animate;
+			glutPostRedisplay();
 			break;
 	}
 }
@@ -533,18 +550,26 @@ GLint init_glut(GLint *argc, char **argv)
 	// What to do on each display loop iteration
 	glutDisplayFunc(draw);
 
-	// Create menu
-	GLint menuID = glutCreateMenu(menu);
+	// Create menus
+	GLint resetMenu = glutCreateMenu(menu);
+	glutAddMenuEntry("Zoom", MENU_RESET_ZOOM);
+	glutAddMenuEntry("Rotation", MENU_RESET_ROTATION);
+	glutAddMenuEntry("All", MENU_RESET_VIEW);
+
+	GLint animMenu = glutCreateMenu(menu);
+	glutAddMenuEntry("Faster", MENU_FASTER);
+	glutAddMenuEntry("Slower", MENU_SLOWER);
+	glutAddMenuEntry("Start/Stop", MENU_STOP_RUN);
+
+	GLint mainMenu = glutCreateMenu(menu);
 	glutAddMenuEntry("Toggle Shading Model", MENU_TOGGLE_SHADER);
 	glutAddMenuEntry("Zoom In", MENU_ZOOM_IN);
 	glutAddMenuEntry("Zoom Out", MENU_ZOOM_OUT);
 	glutAddMenuEntry("Toggle Culling Orientation", MENU_TOGGLE_CULLING);
-	glutAddMenuEntry("Reset Zoom", MENU_RESET_VIEW);
-	glutAddMenuEntry("Slower", MENU_SLOWER);
-	glutAddMenuEntry("Faster", MENU_FASTER);
-	glutAddMenuEntry("Stop/run", MENU_STOP_RUN);
+	glutAddSubMenu("Animation", animMenu);
+	glutAddSubMenu("Reset", resetMenu);
 
-	glutSetMenu(menuID);
+	glutSetMenu(mainMenu);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	return id;
