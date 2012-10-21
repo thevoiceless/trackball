@@ -45,6 +45,7 @@ bool smoothShading = true;
 // Whether or not back-face culling is being used
 bool backFaceCulling = true;
 // Point under the pixel
+Vector mousePoint(0, 0, 0);
 double tempX = 0;
 double tempY = 0;
 double pointX = 0;
@@ -65,7 +66,7 @@ GLfloat dangle2 = 0.0071;
 // Whether or not to animate
 bool animate = false;
 
-void getPointUnderPixel(double mx, double my)
+Vector getPointUnderPixel(double mx, double my)
 {
 	tempX = ((2.0 * mx) / (vpw - 1.0)) - 1.0;
 	tempY = -(((2.0 * my) / (vph - 1.0)) - 1.0);
@@ -85,6 +86,7 @@ void getPointUnderPixel(double mx, double my)
 		pointY = (tempY / sqrt(pow(tempX, 2) + pow(tempY, 2)));
 		pointZ = 0;
 	}
+	return Vector(pointX, pointY, pointZ);
 }
 
 void toggleCulling()
