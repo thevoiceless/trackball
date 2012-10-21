@@ -41,7 +41,7 @@ double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
 double origFov = 10.0;
 double currentFov = 10.0;
-double d = (1.0 / tan(toRadians(origFov / 2.0)));;
+double d = (1.0 / tan(toRadians(origFov / 2.0)));
 // Whether or not smooth shading is being used
 bool smoothShading = true;
 // Whether or not back-face culling is being used
