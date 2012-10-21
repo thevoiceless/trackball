@@ -51,11 +51,13 @@ Vector p;
 Vector q;
 double tempX = 0;
 double tempY = 0;
-double R[16];	// The superposition of all ﬁnished rotations (matrix)
+// Rotation matrices
+double R[16];	// The superposition of all ﬁnished rotations
 double R0[16];	// The rotation that is currently being speciﬁed
 // Coordinates of the last mouse button down event
 int i_0 = 0;
-int j_0 = 0;	
+int j_0 = 0;
+// Flag to ignore stray mouse events
 bool buttonDown = false;
 
 // GLUT window id; value asigned in main() and should stay constant
@@ -77,9 +79,6 @@ Vector getPointUnderPixel(double mouseX, double mouseY)
 	tempX = ((2.0 * mouseX) / (viewport_width - 1.0)) - 1.0;
 	tempY = -(((2.0 * mouseY) / (viewport_height - 1.0)) - 1.0);
 	double possibleZ = (1.0 - pow(tempX, 2) - pow(tempY, 2));
-	cout << "tempX: " << tempX << endl;
-	cout << "tempY: " << tempY << endl;
-	cout << "possibleZ: " << possibleZ << endl;
 	if (possibleZ >= 0)
 	{
 		return Vector(tempX, tempY, sqrt(possibleZ));
@@ -164,9 +163,9 @@ void init_lightsource()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glLightf(GL_LIGHT0,GL_CONSTANT_ATTENUATION,1.0);
-	glLightf(GL_LIGHT0,GL_LINEAR_ATTENUATION,0.0);
-	glLightf(GL_LIGHT0,GL_QUADRATIC_ATTENUATION,0.0);
+	glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.0);
+	glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.0);
+	glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0);
 
 	// Ambient light intensity: global constant
 	// In OpenGL there is global ambient intensity, like Ia in the Phong model
@@ -191,57 +190,6 @@ void set_material_properties(GLfloat r, GLfloat g, GLfloat b)
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_ambient_and_diffuse);
-}
-
-// Rendering
-// A single cube extending from -1 to 1 in all dimensions
-GLuint draw_cubes()
-{
-	glBegin(GL_QUADS);
-
-	glNormal3f(0.0,0.0,-1.0);
-
-	glVertex3f(1.0,1.0,-1.0);
-	glVertex3f(1.0,-1.0,-1.0);
-	glVertex3f(-1.0,-1.0,-1.0);
-	glVertex3f(-1.0,1.0,-1.0);
-	
-	glNormal3f(0.0,0.0,1.0);
-
-	glVertex3f(1.0,1.0,1.0);
-	glVertex3f(-1.0,1.0,1.0);
-	glVertex3f(-1.0,-1.0,1.0);
-	glVertex3f(1.0,-1.0,1.0);
-
-	glNormal3f(1.0,0.0,0.0);
-
-	glVertex3f(1.0,-1.0,1.0);
-	glVertex3f(1.0,-1.0,-1.0);
-	glVertex3f(1.0,1.0,-1.0);
-	glVertex3f(1.0,1.0,1.0);
-
-	glNormal3f(-1.0,0.0,0.0);
-
-	glVertex3f(-1.0,-1.0,1.0);
-	glVertex3f(-1.0,1.0,1.0);
-	glVertex3f(-1.0,1.0,-1.0);
-	glVertex3f(-1.0,-1.0,-1.0);
-
-	glNormal3f(0.0,1.0,0.0);
-
-	glVertex3f(-1.0,1.0,1.0);
-	glVertex3f(1.0,1.0,1.0);
-	glVertex3f(1.0,1.0,-1.0);
-	glVertex3f(-1.0,1.0,-1.0);
-
-	glNormal3f(0.0,-1.0,0.0);
-
-	glVertex3f(-1.0,-1.0,-1.0);
-	glVertex3f(1.0,-1.0,-1.0);
-	glVertex3f(1.0,-1.0,1.0);
-	glVertex3f(-1.0,-1.0,1.0);
-
-	glEnd();
 }
 
 // Flat shading: One normal for the surface
@@ -286,19 +234,16 @@ GLuint draw_scene()
 {
 	set_material_properties(1.0,1.0,1.0);
 
-	// Translate by minus center of bounding box
-	// Scale
-	// Rotation matrix (trackball)
-	// Translation forward
 	// REVERSE ORDER
 	glPushMatrix();
+		// Translation forward
 		glTranslatef(0, 0, -1.0 - d);
+		// Scale
 		glScalef((2.0 / maxdim), (2.0 / maxdim), (2.0 / maxdim));
-		// Trackball rotation here
+		// Rotation matrix (trackball)
 		glMultMatrixd(R0);
 		glMultMatrixd(R);
-
-
+		// Translate by minus center of bounding box
 		glTranslatef(-((xmin + xmax) / 2.0), -((ymin + ymax) / 2.0), -((zmin + zmax) / 2.0));
 		if (smoothShading)
 		{
@@ -309,45 +254,6 @@ GLuint draw_scene()
 			draw_model_flat();
 		}
 	glPopMatrix();
-
-
-	/*
-	set_material_properties(1.0,1.0,1.0);
-
-	draw_cubes();
-
-	set_material_properties(1.0,0.0,0.0);
-
-	glPushMatrix();
-		glTranslatef(-1.0,-1.0,-1.0);
-		glScalef(.4,.4,.4);
-		draw_cubes();
-	glPopMatrix();
-
-	set_material_properties(0.0,1.0,0.0);
-	
-	glPushMatrix();
-		glTranslatef(-1.0,-1.0,1.0);
-		glScalef(.4,.4,.4);
-		draw_cubes();
-	glPopMatrix();
-
-	set_material_properties(0.0,0.0,1.0);
-	
-	glPushMatrix();
-		glTranslatef(-1.0,1.0,-1.0);
-		glScalef(.4,.4,.4);
-		draw_cubes();
-	glPopMatrix();
-	
-	set_material_properties(0.5,0.0,0.5);
-
-	glPushMatrix();
-		glTranslatef(1.0,-1.0,-1.0);
-		glScalef(.4,.4,.4);
-		draw_cubes();
-	glPopMatrix();
-	*/
 }
 
 // Draw callback: clear window, set up matrices, draw all cubes
@@ -408,7 +314,6 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 	switch (btn)
 	{
 		case GLUT_LEFT_BUTTON:
-			cout << "Left Button"; // remove this line from your final submission
 			switch (state)
 			{
 				case GLUT_DOWN:
@@ -416,13 +321,10 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 					// Begin dragging trackball, assign the event coordinates to i_0 and j_0
 					i_0 = mouseX;
 					j_0 = mouseY;
-					cout << " down at (" << i_0 << "," << j_0 << ")" << endl;
 					// Point p is the point on the sphere underneath (i_0, j_0)
 					p = getPointUnderPixel(i_0, j_0);
-					cout << "P: (" << p.x << "," << p.y << "," << p.z << ")" << endl;
 					break;
 				case GLUT_UP:
-					cout << " up at (" << mouseX << "," << mouseY << ")" << endl; // remove this line from your final submission
 					if (buttonDown)
 					{
 						glMatrixMode(GL_MODELVIEW);
@@ -443,26 +345,20 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 			}
 			break;
 		case GLUT_MIDDLE_BUTTON:
-			cout << "Middle Button"; // remove this line from your final submission
 			switch (state)
 			{
 				case GLUT_DOWN: 
-					cout << " down" << endl; // remove this line from your final submission
 					break;
 				case GLUT_UP:   
-					cout << " up" << endl; // remove this line from your final submission
 					break;
 			}
 			break;
 		case GLUT_RIGHT_BUTTON:
-			cout << "Right Button"; // remove this line from your final submission
 			switch (state)
 			{
 				case GLUT_DOWN: 
-					cout << " down" << endl; // remove this line from your final submission
 					break;
 				case GLUT_UP:   
-					cout << " up" << endl; // remove this line from your final submission
 					break;
 			}
 			break;
@@ -472,8 +368,6 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 // Mouse moves with button down
 GLvoid button_motion(GLint mouseX, GLint mouseY)
 {
-	cout << "Motion with button down: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
-
 	if (buttonDown)
 	{
 		if (mouseX == i_0 && mouseY == j_0)
@@ -483,7 +377,6 @@ GLvoid button_motion(GLint mouseX, GLint mouseY)
 		else
 		{
 			q = getPointUnderPixel(mouseX, mouseY);
-			cout << "Q: (" << q.x << ", " << q.y << ", " << q.z << ")" << endl;
 
 			Vector rotAxis = p.crossWith(q);
 			double rotAngle = toDegrees(acos(p.dotWith(q)));
@@ -509,14 +402,12 @@ GLvoid button_motion(GLint mouseX, GLint mouseY)
 // Mouse moves with button up
 GLvoid passive_motion(GLint mouseX, GLint mouseY)
 {
-	//cout << "Passive Motion: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
 	return;
 }
 
 // Handle keyboard events
 void keyboard(GLubyte key, GLint x, GLint y)
 {
-	cout << "key: " << key << endl;
 	switch (key)
 	{
 		// Exit when escape is pressed
@@ -558,18 +449,15 @@ void menu(int value)
 			toggleShading();
 			break;
 		case MENU_ZOOM_IN:
-			cout << "// Zoom in" << endl;
 			zoomIn();
 			break;
 		case MENU_ZOOM_OUT:
-			cout << "// Zoom out" << endl;
 			zoomOut();
 			break;
 		case MENU_TOGGLE_CULLING:
 			toggleCulling();
 			break;
 		case MENU_RESET_VIEW:
-			//currentFov = origFov;
 			resetZoom();
 			glutPostRedisplay();
 			break;
@@ -699,17 +587,8 @@ GLint main(GLint argc, char *argv[])
 	calcNormals(triangleTable, vertexTable, triangleNormals, vertexNormals);
 	// Calculate bounding box
 	calcBoundingBox(vertexTable, xmin, xmax, ymin, ymax, zmin, zmax, maxdim);
-
-	cout << "Near: " << (1.0 / tan(toRadians(currentFov / 2.0))) - 1.0 << endl;
-	cout << "Far: " << (1.0 / tan(toRadians(currentFov / 2.0))) + 3.0 << endl;
-
-	cout << "d: " << d << endl;
-
+	// Initialize R and R0 to identity
 	setIdentity(R);
-	for (int i = 0; i < 16; ++i)
-	{
-		cout << R[i] << " ";
-	}
 	setIdentity(R0);
 
 	// Initialize GLUT: register callbacks, etc.

@@ -52,8 +52,6 @@ void calcNormals(vector<triangle>& triangleTable, vector<vertex>& vertexTable, v
 		normals.at(triangleTable.at(i).v3) = normals.at(triangleTable.at(i).v3).plus(triangleNormals.at(i));
 	}
 	vertexNormals = normals;
-	cout << "Number of triangle normals: " << triangleNormals.size() << endl;
-	cout << "Number of vertex normals: " << vertexNormals.size() << endl;
 }
 
 void calcBoundingBox(vector<vertex>& vertexTable, double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax, double& maxdim)
@@ -76,14 +74,6 @@ void calcBoundingBox(vector<vertex>& vertexTable, double& xmin, double& xmax, do
 
 	double tempmax = max(abs(xmax - xmin), abs(ymax - ymin));
 	maxdim = max(tempmax, abs(zmax - zmin));
-
-	cout << "Min x: " << xmin << endl;
-	cout << "Max x: " << xmax << endl;
-	cout << "Min y: " << ymin << endl;
-	cout << "Max y: " << ymax << endl;
-	cout << "Min z: " << zmin << endl;
-	cout << "Max z: " << zmax << endl;
-	cout << "Max dim: " << maxdim << endl;
 }
 
 double toRadians(double d)

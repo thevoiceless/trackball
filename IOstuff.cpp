@@ -12,8 +12,6 @@ void readInputFile(string& filename, int numTriangles, int numVertices, vector<t
 
 	// Read the number of triangles and vertices
 	inFile >> numTriangles >> numVertices;
-	cout << "Triangles: " << numTriangles << endl;
-	cout << "Vertices: " << numVertices << endl;
 
 	// Read the vertex IDs for each triangle
 	// Triangle soup: Each line contains 3 vertices that define a triangle
@@ -32,7 +30,5 @@ void readInputFile(string& filename, int numTriangles, int numVertices, vector<t
 		vertexTable.push_back(vertex(x, y, z));
 	}
 
-	cout << "Number of triangles: " << triangleTable.size() << endl;
-	cout << "Number of vertices: " << vertexTable.size() << endl;
 	inFile.close();
 }
