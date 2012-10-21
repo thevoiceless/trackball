@@ -49,7 +49,6 @@ Vector p;
 Vector q;
 double tempX = 0;
 double tempY = 0;
-
 double R[16];	// The superposition of all ﬁnished rotations (matrix)
 double R0[16];	// The rotation that is currently being speciﬁed
 // Coordinates of the last mouse button down event
@@ -653,6 +652,9 @@ GLint main(GLint argc, char *argv[])
 	cout << "Far: " << (1.0 / tan(toRadians(currentFov / 2.0))) + 3.0 << endl;
 
 	cout << "d: " << d << endl;
+
+	setIdentity(R);
+	setIdentity(R0);
 
 	// Initialize GLUT: register callbacks, etc.
 	windowID = init_glut(&argc, argv);

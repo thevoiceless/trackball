@@ -90,3 +90,18 @@ double toRadians(double d)
 {
 	return (d * (M_PI / 180.0));
 }
+
+void setIdentity(double matrix[])
+{
+	for (int i = 0; i <= 16; ++i)
+	{
+		if (i % 5 == 1)
+		{
+			matrix[i - 1] = 1;
+		}
+		else
+		{
+			matrix[i] = 0;
+		}
+	}
+}
