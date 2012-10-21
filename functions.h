@@ -98,11 +98,11 @@ double toDegrees(double r)
 
 void setIdentity(double matrix[])
 {
-	for (int i = 0; i <= 16; ++i)
+	for (int i = 0; i < 16; ++i)
 	{
-		if (i % 5 == 1)
+		if (i % 5 == 0)
 		{
-			matrix[i - 1] = 1;
+			matrix[i] = 1;
 		}
 		else
 		{

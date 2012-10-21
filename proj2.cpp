@@ -56,7 +56,7 @@ double R0[16];	// The rotation that is currently being speciﬁed
 // Coordinates of the last mouse button down event
 int i_0 = 0;
 int j_0 = 0;	
-
+bool buttonDown = false;
 
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
@@ -412,6 +412,7 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 			switch (state)
 			{
 				case GLUT_DOWN:
+					buttonDown = true;
 					// Begin dragging trackball, assign the event coordinates to i_0 and j_0
 					i_0 = mouseX;
 					j_0 = mouseY;
@@ -422,23 +423,22 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 					break;
 				case GLUT_UP:
 					cout << " up at (" << mouseX << "," << mouseY << ")" << endl; // remove this line from your final submission
-					Vector rotAxis = p.crossWith(q);
-					double rotAngle = toDegrees(acos(p.dotWith(q)));
-
-					glMatrixMode(GL_MODELVIEW);
-					// Save the current matrix
-					glPushMatrix();
-						// Set modelview matrix to identity
-						glLoadIdentity();
-						// Apply Rprime
-						glRotated(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
-						// Apply R
-						glMultMatrixd(R);
-						// Modelview → R
-						glGetDoublev(GL_MODELVIEW_MATRIX, R);
-					// Restore the original modelview matrix
-					glPopMatrix();
-					setIdentity(R0);
+					if (buttonDown)
+					{
+						glMatrixMode(GL_MODELVIEW);
+						// Save the current matrix
+						glPushMatrix();
+							// Load R0
+							glLoadMatrixd(R0);
+							// Apply R
+							glMultMatrixd(R);
+							// Modelview → R
+							glGetDoublev(GL_MODELVIEW_MATRIX, R);
+						// Restore the original modelview matrix
+						glPopMatrix();
+						setIdentity(R0);
+						buttonDown = false;
+					}
 					break;
 			}
 			break;
@@ -474,32 +474,35 @@ GLvoid button_motion(GLint mouseX, GLint mouseY)
 {
 	cout << "Motion with button down: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
 
-	if (mouseX == i_0 && mouseY == j_0)
+	if (buttonDown)
 	{
-		setIdentity(R0);
+		if (mouseX == i_0 && mouseY == j_0)
+		{
+			setIdentity(R0);
+		}
+		else
+		{
+			q = getPointUnderPixel(mouseX, mouseY);
+			cout << "Q: (" << q.x << ", " << q.y << ", " << q.z << ")" << endl;
+
+			Vector rotAxis = p.crossWith(q);
+			double rotAngle = toDegrees(acos(p.dotWith(q)));
+
+			glMatrixMode(GL_MODELVIEW);
+			// Save the current matrix
+			glPushMatrix();
+				// Set modelview matrix to identity
+				glLoadIdentity();
+				// Apply the rotation
+				glRotated(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
+				// Modelview → R0
+				glGetDoublev(GL_MODELVIEW_MATRIX, R0);
+			// Restore the original modelview matrix
+			glPopMatrix();
+		}
+
+		glutPostRedisplay();
 	}
-	else
-	{
-		q = getPointUnderPixel(mouseX, mouseY);
-		cout << "Q: (" << q.x << ", " << q.y << ", " << q.z << ")" << endl;
-
-		Vector rotAxis = p.crossWith(q);
-		double rotAngle = toDegrees(acos(p.dotWith(q)));
-
-		glMatrixMode(GL_MODELVIEW);
-		// Save the current matrix
-		glPushMatrix();
-			// Set modelview matrix to identity
-			glLoadIdentity();
-			// Apply the rotation
-			glRotated(rotAngle, rotAxis.x, rotAxis.y, rotAxis.z);
-			// Modelview → R0
-			glGetDoublev(GL_MODELVIEW_MATRIX, R0);
-		// Restore the original modelview matrix
-		glPopMatrix();
-	}
-
-	glutPostRedisplay();
 	return;
 }
 
@@ -703,6 +706,10 @@ GLint main(GLint argc, char *argv[])
 	cout << "d: " << d << endl;
 
 	setIdentity(R);
+	for (int i = 0; i < 16; ++i)
+	{
+		cout << R[i] << " ";
+	}
 	setIdentity(R0);
 
 	// Initialize GLUT: register callbacks, etc.
