@@ -39,7 +39,7 @@ vector<Vector> vertexNormals;
 // Bounding box
 double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
-double origFov = 10.0;
+double origFov = 8.0;
 double currentFov = 10.0;
 double d = (1.0 / tan(toRadians(origFov / 2.0)));
 // Whether or not smooth shading is being used
@@ -150,7 +150,8 @@ void slowDown()
 
 void resetZoom()
 {
-	currentFov = origFov;
+	//currentFov = origFov;
+	currentFov = 10.0;
 }
 
 void resetRotation()
