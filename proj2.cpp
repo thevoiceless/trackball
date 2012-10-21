@@ -16,7 +16,7 @@
 using namespace std;
 
 // OpenGL variables
-static const int VPD_DEFAULT = 800;
+static const int VIEWPORT_DEFAULT = 800;
 static const int MENU_TOGGLE_SHADER = 1;
 static const int MENU_ZOOM_IN = 2;
 static const int MENU_ZOOM_OUT = 3;
@@ -45,14 +45,10 @@ bool smoothShading = true;
 // Whether or not back-face culling is being used
 bool backFaceCulling = true;
 // Point under the pixel
-Vector mousePoint(0, 0, 0);
-Vector p(0, 0, 0);
-Vector q(0, 0, 0);
+Vector p;
+Vector q;
 double tempX = 0;
 double tempY = 0;
-double pointX = 0;
-double pointY = 0;
-double pointZ = 0;
 
 double R[16];	// The superposition of all ﬁnished rotations (matrix)
 double R0[16];	// The rotation that is currently being speciﬁed
@@ -64,8 +60,8 @@ int j_0 = 0;
 // GLUT window id; value asigned in main() and should stay constant
 GLint windowID;
 // Viewport dimensions; change when window is resized (via resize callback)
-GLint vpw = VPD_DEFAULT;
-GLint vph = VPD_DEFAULT;
+GLint viewport_width = VIEWPORT_DEFAULT;
+GLint viewport_height = VIEWPORT_DEFAULT;
 
 // Angles used in animation
 GLfloat angle1 = 0;
@@ -77,25 +73,20 @@ bool animate = false;
 
 Vector getPointUnderPixel(double mouseX, double mouseY)
 {
-	tempX = ((2.0 * mouseX) / (vpw - 1.0)) - 1.0;
-	tempY = -(((2.0 * mouseY) / (vph - 1.0)) - 1.0);
+	tempX = ((2.0 * mouseX) / (viewport_width - 1.0)) - 1.0;
+	tempY = -(((2.0 * mouseY) / (viewport_height - 1.0)) - 1.0);
 	double possibleZ = (1.0 - pow(tempX, 2) - pow(tempY, 2));
 	cout << "tempX: " << tempX << endl;
 	cout << "tempY: " << tempY << endl;
 	cout << "possibleZ: " << possibleZ << endl;
 	if (possibleZ >= 0)
 	{
-		pointX = tempX;
-		pointY = tempY;
-		pointZ = sqrt(possibleZ);
+		return Vector(tempX, tempY, sqrt(possibleZ));
 	}
 	else
 	{
-		pointX = (tempX / sqrt(pow(tempX, 2) + pow(tempY, 2)));
-		pointY = (tempY / sqrt(pow(tempX, 2) + pow(tempY, 2)));
-		pointZ = 0;
+		return Vector((tempX / sqrt(pow(tempX, 2) + pow(tempY, 2))), (tempY / sqrt(pow(tempX, 2) + pow(tempY, 2))), 0);
 	}
-	return Vector(pointX, pointY, pointZ);
 }
 
 void toggleCulling()
@@ -421,7 +412,7 @@ void mouse_button(GLint btn, GLint state, GLint mouseX, GLint mouseY)
 					j_0 = mouseY;
 					cout << " down at (" << mouseX << "," << mouseY << ")" << endl;
 					p = getPointUnderPixel(mouseX, mouseY);
-					cout << "Point under pixel: (" << pointX << "," << pointY << "," << pointZ << ")" << endl;
+					cout << "P: (" << p.x << "," << p.y << "," << p.z << ")" << endl;
 					break;
 				case GLUT_UP:
 					cout << " up" << endl; // remove this line from your final submission
@@ -460,6 +451,7 @@ GLvoid button_motion(GLint mouseX, GLint mouseY)
 {
 	cout << "Motion with button down: " << mouseX << "," << mouseY << endl; // remove this line from your final submission
 	q = getPointUnderPixel(mouseX, mouseY);
+	cout << "Q: (" << q.x << ", " << q.y << ", " << q.z << ")" << endl;
 	return;
 }
 
@@ -549,11 +541,11 @@ GLvoid reshape(GLint sizex, GLint sizey)
 {
 	glutSetWindow(windowID);
 
-	vpw = sizex;
-	vph = sizey;
+	viewport_width = sizex;
+	viewport_height = sizey;
 
-	glViewport(0, 0, vpw, vph);
-	glutReshapeWindow(vpw, vph);
+	glViewport(0, 0, viewport_width, viewport_height);
+	glutReshapeWindow(viewport_width, viewport_height);
 
 	glutPostRedisplay();
 }
@@ -566,7 +558,7 @@ GLint init_glut(GLint *argc, char **argv)
 	glutInit(argc, argv);
 
 	// Size and placement hints to the window system
-	glutInitWindowSize(vpw, vph);
+	glutInitWindowSize(viewport_width, viewport_height);
 	glutInitWindowPosition(10,10);
 
 	// Double-buffered, RGB color mode
