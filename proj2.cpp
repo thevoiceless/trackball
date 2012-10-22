@@ -39,9 +39,10 @@ vector<Vector> vertexNormals;
 // Bounding box
 double xmin, xmax, ymin, ymax, zmin, zmax, maxdim;
 // Field of view angle
-double origFov = 8.0;
-double currentFov = 10.0;
-double d = (1.0 / tan(toRadians(origFov / 2.0)));
+double clippingFov = 8.0;
+double initialFov = 10.0;
+double currentFov = initialFov;
+double d = (1.0 / tan(toRadians(clippingFov / 2.0)));
 // Whether or not smooth shading is being used
 bool smoothShading = true;
 // Whether or not back-face culling is being used
@@ -150,8 +151,7 @@ void slowDown()
 
 void resetZoom()
 {
-	//currentFov = origFov;
-	currentFov = 10.0;
+	currentFov = initialFov;
 }
 
 void resetRotation()
